@@ -33,9 +33,14 @@ function App() {
   };
 
   const handleChangeInput = (id, event) => {
-    const values = [...inputFields];
-    values[id][event.target.name] = event.target.value;
-    setInputFields(values);
+    const newInputFields = inputFields.map(i => {
+      if(id === i.id) {
+        i[event.target.name] = event.target.value
+      }
+      return i;
+    })
+    
+    setInputFields(newInputFields);
   }
 
   const handleAddFields = () => {
@@ -68,12 +73,9 @@ function App() {
               value={inputField.lastName}
               onChange={event => handleChangeInput(inputField.id, event)}
             />
-            {
-              inputFields.length > 1 &&
-              <IconButton onClick={() => handleRemoveFields(inputField.id)}>
-                <RemoveIcon />
-              </IconButton>
-            }
+            <IconButton disabled={inputFields.length === 1} onClick={() => handleRemoveFields(inputField.id)}>
+              <RemoveIcon />
+            </IconButton>
             <IconButton
               onClick={handleAddFields}
             >
