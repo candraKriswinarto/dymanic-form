@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/IconButton';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import Icon from '@material-ui/core/Icon';
+import { v4 as uuidv4 } from 'uuid';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -23,8 +24,7 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles()
   const [inputFields, setInputFields] = useState([
-    { firstName: '', lastName: '' },
-    { firstName: '', lastName: '' },
+    { id: uuidv4(), firstName: '', lastName: '' },
   ]);
 
   const handleSubmit = (e) => {
@@ -32,19 +32,19 @@ function App() {
     console.log("InputFields", inputFields);
   };
 
-  const handleChangeInput = (index, event) => {
+  const handleChangeInput = (id, event) => {
     const values = [...inputFields];
-    values[index][event.target.name] = event.target.value;
+    values[id][event.target.name] = event.target.value;
     setInputFields(values);
   }
 
   const handleAddFields = () => {
-    setInputFields([...inputFields, { firstName: '', lastName: '' }])
+    setInputFields([...inputFields, { id: uuidv4(),  firstName: '', lastName: '' }])
   }
 
-  const handleRemoveFields = (index) => {
+  const handleRemoveFields = id => {
     const values  = [...inputFields];
-    values.splice(index, 1);
+    values.splice(id, 1);
     setInputFields(values);
   }
 
@@ -52,29 +52,30 @@ function App() {
     <Container>
       <h1>Add New Member</h1>
       <form className={classes.root} onSubmit={handleSubmit}>
-        { inputFields.map((inputField, index) => (
-          <div key={index}>
-            <TextField 
+        { inputFields.map(inputField => (
+          <div key={inputField.id}>
+            <TextField
               name="firstName"
               label="First Name"
               variant="filled"
               value={inputField.firstName}
-              onChange={event => handleChangeInput(index, event)}
+              onChange={event => handleChangeInput(inputField.id, event)}
             />
-            <TextField 
+            <TextField
               name="lastName"
               label="Last Name"
               variant="filled"
               value={inputField.lastName}
-              onChange={event => handleChangeInput(index, event)}
+              onChange={event => handleChangeInput(inputField.id, event)}
             />
+            {
+              inputFields.length > 1 &&
+              <IconButton onClick={() => handleRemoveFields(inputField.id)}>
+                <RemoveIcon />
+              </IconButton>
+            }
             <IconButton
-              onClick={() => handleRemoveFields(index)}
-            >
-              <RemoveIcon />
-            </IconButton>
-            <IconButton
-              onClick={() => handleAddFields()}
+              onClick={handleAddFields}
             >
               <AddIcon />
             </IconButton>
