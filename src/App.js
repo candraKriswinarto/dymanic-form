@@ -49,7 +49,7 @@ function App() {
 
   const handleRemoveFields = id => {
     const values  = [...inputFields];
-    values.splice(id, 1);
+    values.splice(values.findIndex(value => value.id === id), 1);
     setInputFields(values);
   }
 
